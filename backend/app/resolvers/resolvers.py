@@ -163,7 +163,11 @@ class MutationResolver:
         access_token = AuthService.create_access_token(data={"sub": user.id})
         
         # AuthPayload 객체 생성 (types.py에서 import 필요)
-        from app.schemas.types import AuthPayload
+        from app.schemas.types import AuthPayload, Role as GraphQLRole
+        
+        # Role enum을 GraphQL 호환 형식으로 변환
+        user.role = GraphQLRole(user.role.value) if hasattr(user.role, 'value') else GraphQLRole(user.role)
+        
         return AuthPayload(token=access_token, user=user)
 
     @staticmethod
@@ -172,9 +176,14 @@ class MutationResolver:
         회원가입 처리
         """
         context = info.context
+        db = context["db"]
+        
+        # 간단한 인증 서비스 생성
+        from app.services.auth_service import AuthServiceDB
+        auth_service = AuthServiceDB(db)
         
         # 이메일 중복 확인
-        existing_user = context["db"].query(User).filter(User.email == input["email"]).first()
+        existing_user = db.query(User).filter(User.email == input.email).first()
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -182,11 +191,20 @@ class MutationResolver:
             )
         
         # 새 사용자 생성
-        user = context["auth_service"].create_user(input)
+        user_input = {
+            "email": input.email,
+            "password": input.password,
+            "name": input.name
+        }
+        user = auth_service.create_user(user_input)
         access_token = AuthService.create_access_token(data={"sub": user.id})
         
         # AuthPayload 객체 생성 (types.py에서 import 필요)
-        from app.schemas.types import AuthPayload
+        from app.schemas.types import AuthPayload, Role as GraphQLRole
+        
+        # Role enum을 GraphQL 호환 형식으로 변환
+        user.role = GraphQLRole(user.role.value) if hasattr(user.role, 'value') else GraphQLRole(user.role)
+        
         return AuthPayload(token=access_token, user=user)
 
     @staticmethod
