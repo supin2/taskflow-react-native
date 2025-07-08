@@ -142,14 +142,14 @@ class MutationResolver:
         return {"token": access_token, "user": user}
 
     @staticmethod
-    def register(info, input: RegisterInput) -> AuthPayload:
+    def register(info, input: Dict[str, Any]) -> Dict[str, Any]:
         """
         회원가입 처리
         """
         context = info.context
         
         # 이메일 중복 확인
-        existing_user = context["db"].query(User).filter(User.email == input.email).first()
+        existing_user = context["db"].query(User).filter(User.email == input["email"]).first()
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -162,7 +162,7 @@ class MutationResolver:
         return {"token": access_token, "user": user}
 
     @staticmethod
-    def create_project(info, input: CreateProjectInput) -> Project:
+    def create_project(info, input: Dict[str, Any]) -> Project:
         """
         프로젝트 생성
         """
@@ -174,7 +174,7 @@ class MutationResolver:
         return context["project_service"].create_project(current_user.id, input)
 
     @staticmethod
-    def update_project(info, id: str, input: UpdateProjectInput) -> Project:
+    def update_project(info, id: str, input: Dict[str, Any]) -> Project:
         """
         프로젝트 수정
         """
@@ -206,7 +206,7 @@ class MutationResolver:
         return context["project_service"].delete_project(id)
 
     @staticmethod
-    def create_task(info, input: CreateTaskInput) -> Task:
+    def create_task(info, input: Dict[str, Any]) -> Task:
         """
         태스크 생성
         """
@@ -216,13 +216,13 @@ class MutationResolver:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
         # 프로젝트 접근 권한 확인
-        if not context["project_service"].has_project_access(current_user.id, input.project_id):
+        if not context["project_service"].has_project_access(current_user.id, input["project_id"]):
             raise HTTPException(status_code=403, detail="Access denied")
         
         return context["task_service"].create_task(current_user.id, input)
 
     @staticmethod
-    def update_task(info, id: str, input: UpdateTaskInput) -> Task:
+    def update_task(info, id: str, input: Dict[str, Any]) -> Task:
         """
         태스크 수정
         """

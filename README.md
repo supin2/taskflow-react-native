@@ -99,11 +99,15 @@ w  # 웹 브라우저에서 열기
 
 #### iOS 시뮬레이터에서 실행
 ```bash
-# Metro 서버가 시작된 후
+# 방법 1: Metro 서버가 시작된 후 터미널에서
 i  # iOS 시뮬레이터에서 열기
 
-# 또는 특정 iOS 기기 지정
-npx expo run:ios --simulator="iPhone 15 Pro"
+# 방법 2: 직접 실행 (네이티브 빌드)
+npx expo run:ios
+
+# 방법 3: 시뮬레이터 먼저 실행 후 Metro 서버에서 i 키
+open -a Simulator  # 시뮬레이터 실행
+npm start          # Metro 서버 시작 후 i 키 누르기
 ```
 
 **iOS 시뮬레이터 요구사항** (macOS만 가능):
@@ -112,11 +116,15 @@ npx expo run:ios --simulator="iPhone 15 Pro"
 
 #### Android 에뮬레이터에서 실행
 ```bash
-# Metro 서버가 시작된 후
+# 방법 1: Metro 서버가 시작된 후 터미널에서
 a  # Android 에뮬레이터에서 열기
 
-# 또는 직접 실행
+# 방법 2: 직접 실행 (네이티브 빌드)
 npx expo run:android
+
+# 방법 3: 에뮬레이터 먼저 실행 후 Metro 서버에서 a 키
+# Android Studio에서 AVD Manager로 에뮬레이터 실행
+npm start  # Metro 서버 시작 후 a 키 누르기
 ```
 
 **Android 에뮬레이터 요구사항**:
@@ -164,6 +172,24 @@ mutation {
 ### 의존성 충돌 문제
 ```bash
 npm install --legacy-peer-deps
+```
+
+### react-native-gesture-handler 오류
+```bash
+# 의존성 설치
+npm install react-native-gesture-handler --legacy-peer-deps
+
+# App.tsx 파일 상단에 import 추가
+import 'react-native-gesture-handler';
+```
+
+### Metro 포트 충돌 문제
+```bash
+# 다른 포트 사용
+npx expo start --port 8082
+
+# 또는 기존 프로세스 종료
+lsof -ti:8081 | xargs kill -9
 ```
 
 ### 서버 연결 문제
