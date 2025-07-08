@@ -45,6 +45,7 @@ export default function ProjectsScreen({ navigation }: Props) {
   const [createModalVisible, setCreateModalVisible] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
+    skip: !user, // 사용자가 없으면 쿼리 실행하지 않음
     onCompleted: (data) => {
       setProjects(data.projects || []);
     },

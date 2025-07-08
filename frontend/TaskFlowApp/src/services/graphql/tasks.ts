@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_TASKS = gql`
   query GetTasks($projectId: String!, $filter: TaskFilter) {
-    tasks(projectId: $projectId, filter: $filter) {
+    tasks(project_id: $projectId, filter: $filter) {
       id
       title
       description
@@ -111,7 +111,7 @@ export const DELETE_TASK = gql`
 
 export const ADD_COMMENT = gql`
   mutation AddComment($taskId: String!, $content: String!) {
-    add_comment(taskId: $taskId, content: $content) {
+    add_comment(task_id: $taskId, content: $content) {
       id
       content
       author {
