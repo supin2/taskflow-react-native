@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from contextlib import asynccontextmanager
 
 from app.schemas.schema import schema
-from app.database.database import create_tables
+from app.database.database import create_tables, SessionLocal
 
 
 @asynccontextmanager
@@ -32,10 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# GraphQL 라우터 생성  
-from app.database.database import SessionLocal
-
-def get_graphql_context(request):
+# GraphQL 컨텍스트 생성 함수
+async def get_context(request: Request):
     """GraphQL 컨텍스트 생성"""
     db = SessionLocal()
     
@@ -66,11 +64,8 @@ def get_graphql_context(request):
         "current_user": current_user,
     }
 
-graphql_app = GraphQLRouter(
-    schema,
-    context_getter=get_graphql_context,
-    graphql_ide="graphiql"
-)
+# GraphQL 라우터 생성
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 # GraphQL 엔드포인트 등록
 app.include_router(graphql_app, prefix="/graphql")
