@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 
 from app.schemas.schema import schema
 from app.database.database import create_tables
-from app.resolvers.resolvers import get_context
 
 
 @asynccontextmanager
@@ -36,7 +35,7 @@ app.add_middleware(
 # GraphQL 라우터 생성  
 from app.database.database import SessionLocal
 
-def get_context():
+def get_graphql_context():
     """GraphQL 컨텍스트 생성"""
     db = SessionLocal()
     return {
@@ -47,7 +46,7 @@ def get_context():
 
 graphql_app = GraphQLRouter(
     schema,
-    context_getter=get_context,
+    context_getter=get_graphql_context,
     graphql_ide="graphiql"
 )
 

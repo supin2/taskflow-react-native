@@ -1,9 +1,7 @@
 from typing import Optional, List, Dict, Any
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-
-from app.database.database import get_db
 from app.models.models import User, Project, Task, Comment, ProjectMember, Notification, Activity
 # GraphQL 입력 및 출력 타입들은 별도 파일에 정의
 from app.models.models import Role, TaskStatus, Priority
