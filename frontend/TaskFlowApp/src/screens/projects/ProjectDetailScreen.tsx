@@ -7,7 +7,6 @@ import {
   Alert,
 } from 'react-native';
 import {
-  Title,
   Text,
   Card,
   Button,
@@ -179,7 +178,7 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
         {/* 프로젝트 정보 */}
         <Card style={styles.projectCard}>
           <Card.Content>
-            <Title style={styles.projectTitle}>{project.name}</Title>
+            <Text variant="headlineMedium" style={styles.projectTitle}>{project.name}</Text>
             {project.description && (
               <Text style={styles.projectDescription}>{project.description}</Text>
             )}
@@ -194,7 +193,7 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
         {/* 태스크 통계 */}
         <Card style={styles.statsCard}>
           <Card.Content>
-            <Title style={styles.sectionTitle}>태스크 현황</Title>
+            <Text variant="headlineMedium" style={styles.sectionTitle}>태스크 현황</Text>
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statNumber}>{taskStats.total}</Text>
@@ -226,7 +225,7 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
         <Card style={styles.tasksCard}>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <Title style={styles.sectionTitle}>최근 태스크</Title>
+              <Text variant="headlineMedium" style={styles.sectionTitle}>최근 태스크</Text>
               <Button
                 mode="text"
                 onPress={() => {

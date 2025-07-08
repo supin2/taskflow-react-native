@@ -38,7 +38,7 @@ export default function CreateTaskModal({ visible, onDismiss, projectId }: Props
 
   const [createTask, { loading }] = useMutation(CREATE_TASK, {
     onCompleted: (data) => {
-      addTask(data.createTask);
+      addTask(data.create_task);
       handleClose();
     },
     onError: (error) => {

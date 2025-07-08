@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 import {
   Card,
-  Title,
   Text,
-  Paragraph,
   FAB,
   IconButton,
   ActivityIndicator,
@@ -188,11 +186,11 @@ export default function TasksScreen({ navigation }: Props) {
       <Card.Content>
         <View style={styles.taskHeader}>
           <View style={styles.taskInfo}>
-            <Title style={styles.taskTitle}>{item.title}</Title>
+            <Text variant="headlineMedium" style={styles.taskTitle}>{item.title}</Text>
             {item.description && (
-              <Paragraph style={styles.taskDescription}>
+              <Text variant="bodyMedium" style={styles.taskDescription}>
                 {item.description}
-              </Paragraph>
+              </Text>
             )}
           </View>
           <IconButton
@@ -241,12 +239,12 @@ export default function TasksScreen({ navigation }: Props) {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <IconButton icon="format-list-checks" size={64} iconColor={theme.colors.outline} />
-      <Title style={[styles.emptyTitle, { color: theme.colors.outline }]}>
+      <Text variant="headlineMedium" style={[styles.emptyTitle, { color: theme.colors.outline }]}>
         태스크가 없습니다
-      </Title>
-      <Paragraph style={[styles.emptyText, { color: theme.colors.outline }]}>
+      </Text>
+      <Text variant="bodyMedium" style={[styles.emptyText, { color: theme.colors.outline }]}>
         새 태스크를 생성하여 작업을 시작해보세요
-      </Paragraph>
+      </Text>
     </View>
   );
 
@@ -264,7 +262,7 @@ export default function TasksScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Title style={styles.screenTitle}>태스크</Title>
+        <Text variant="headlineMedium" style={styles.screenTitle}>태스크</Text>
         {currentProject && (
           <Text style={styles.projectName}>{currentProject.name}</Text>
         )}

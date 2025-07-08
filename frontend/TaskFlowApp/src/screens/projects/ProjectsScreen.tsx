@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import {
   Card,
-  Title,
-  Paragraph,
   FAB,
   Text,
   IconButton,
@@ -92,11 +90,11 @@ export default function ProjectsScreen({ navigation }: Props) {
       <Card.Content>
         <View style={styles.projectHeader}>
           <View style={styles.projectInfo}>
-            <Title style={styles.projectTitle}>{item.name}</Title>
+            <Text variant="headlineMedium" style={styles.projectTitle}>{item.name}</Text>
             {item.description && (
-              <Paragraph style={styles.projectDescription}>
+              <Text variant="bodyMedium" style={styles.projectDescription}>
                 {item.description}
-              </Paragraph>
+              </Text>
             )}
           </View>
           <IconButton
@@ -117,12 +115,12 @@ export default function ProjectsScreen({ navigation }: Props) {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <IconButton icon="folder-plus" size={64} iconColor={theme.colors.outline} />
-      <Title style={[styles.emptyTitle, { color: theme.colors.outline }]}>
+      <Text variant="headlineMedium" style={[styles.emptyTitle, { color: theme.colors.outline }]}>
         프로젝트가 없습니다
-      </Title>
-      <Paragraph style={[styles.emptyText, { color: theme.colors.outline }]}>
+      </Text>
+      <Text variant="bodyMedium" style={[styles.emptyText, { color: theme.colors.outline }]}>
         새 프로젝트를 생성하여 팀 협업을 시작해보세요
-      </Paragraph>
+      </Text>
     </View>
   );
 
@@ -138,7 +136,7 @@ export default function ProjectsScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Title style={styles.screenTitle}>프로젝트</Title>
+        <Text variant="headlineMedium" style={styles.screenTitle}>프로젝트</Text>
         <Text style={styles.welcomeText}>안녕하세요, {user?.name}님!</Text>
       </View>
 

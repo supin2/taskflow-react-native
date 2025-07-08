@@ -48,7 +48,7 @@ export default function EditTaskModal({ visible, onDismiss, task }: Props) {
 
   const [updateTaskMutation, { loading }] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
-      updateTask(data.updateTask);
+      updateTask(data.update_task);
       handleClose();
     },
     onError: (error) => {

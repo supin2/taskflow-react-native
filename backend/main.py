@@ -44,7 +44,8 @@ def get_graphql_context(request):
 
 graphql_app = GraphQLRouter(
     schema,
-    context_getter=get_graphql_context
+    context_getter=get_graphql_context,
+    graphiql=True
 )
 
 # GraphQL 엔드포인트 등록

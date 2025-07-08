@@ -60,6 +60,12 @@ export const useAuthStore = create<AuthState>()(
         token: state.token, 
         isAuthenticated: state.isAuthenticated 
       }),
+      onRehydrateStorage: () => (state) => {
+        // 토큰이 복원되면 AsyncStorage에도 저장
+        if (state?.token) {
+          AsyncStorage.setItem('auth_token', state.token);
+        }
+      },
     }
   )
 );

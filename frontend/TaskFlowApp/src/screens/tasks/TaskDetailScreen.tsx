@@ -8,7 +8,6 @@ import {
   FlatList,
 } from 'react-native';
 import {
-  Title,
   Text,
   Card,
   Button,
@@ -67,8 +66,8 @@ export default function TaskDetailScreen({ navigation, route }: Props) {
 
   const [updateTaskMutation] = useMutation(UPDATE_TASK, {
     onCompleted: (data) => {
-      setTask(data.updateTask);
-      updateTask(data.updateTask);
+      setTask(data.update_task);
+      updateTask(data.update_task);
     },
     onError: (error) => {
       Alert.alert('오류', '태스크 수정에 실패했습니다.');
@@ -88,7 +87,7 @@ export default function TaskDetailScreen({ navigation, route }: Props) {
 
   const [addCommentMutation, { loading: commentLoading }] = useMutation(ADD_COMMENT, {
     onCompleted: (data) => {
-      setComments(prev => [...prev, data.addComment]);
+      setComments(prev => [...prev, data.add_comment]);
       setCommentText('');
     },
     onError: (error) => {
@@ -260,7 +259,7 @@ export default function TaskDetailScreen({ navigation, route }: Props) {
         <Card style={styles.taskCard}>
           <Card.Content>
             <View style={styles.taskHeader}>
-              <Title style={styles.taskTitle}>{task.title}</Title>
+              <Text variant="headlineMedium" style={styles.taskTitle}>{task.title}</Text>
               <Menu
                 visible={menuVisible}
                 onDismiss={() => setMenuVisible(false)}
@@ -323,7 +322,7 @@ export default function TaskDetailScreen({ navigation, route }: Props) {
         {/* 상태 변경 버튼들 */}
         <Card style={styles.statusCard}>
           <Card.Content>
-            <Title style={styles.sectionTitle}>상태 변경</Title>
+            <Text variant="headlineMedium" style={styles.sectionTitle}>상태 변경</Text>
             <View style={styles.statusButtons}>
               {statusOptions.map((option) => (
                 <Button
@@ -343,7 +342,7 @@ export default function TaskDetailScreen({ navigation, route }: Props) {
         {/* 댓글 섹션 */}
         <Card style={styles.commentsCard}>
           <Card.Content>
-            <Title style={styles.sectionTitle}>댓글</Title>
+            <Text variant="headlineMedium" style={styles.sectionTitle}>댓글</Text>
             
             {/* 댓글 입력 */}
             <View style={styles.commentInput}>

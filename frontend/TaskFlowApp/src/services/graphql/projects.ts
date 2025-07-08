@@ -26,7 +26,7 @@ export const GET_PROJECT = gql`
 
 export const CREATE_PROJECT = gql`
   mutation CreateProject($input: CreateProjectInput!) {
-    createProject(input: $input) {
+    create_project(input: $input) {
       id
       name
       description
@@ -38,7 +38,7 @@ export const CREATE_PROJECT = gql`
 
 export const UPDATE_PROJECT = gql`
   mutation UpdateProject($id: String!, $input: UpdateProjectInput!) {
-    updateProject(id: $id, input: $input) {
+    update_project(id: $id, input: $input) {
       id
       name
       description
@@ -50,6 +50,6 @@ export const UPDATE_PROJECT = gql`
 
 export const DELETE_PROJECT = gql`
   mutation DeleteProject($id: String!) {
-    deleteProject(id: $id)
+    delete_project(id: $id)
   }
 `;

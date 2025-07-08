@@ -56,7 +56,7 @@ export const GET_TASK = gql`
 
 export const CREATE_TASK = gql`
   mutation CreateTask($input: CreateTaskInput!) {
-    createTask(input: $input) {
+    create_task(input: $input) {
       id
       title
       description
@@ -80,7 +80,7 @@ export const CREATE_TASK = gql`
 
 export const UPDATE_TASK = gql`
   mutation UpdateTask($id: String!, $input: UpdateTaskInput!) {
-    updateTask(id: $id, input: $input) {
+    update_task(id: $id, input: $input) {
       id
       title
       description
@@ -105,13 +105,13 @@ export const UPDATE_TASK = gql`
 
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: String!) {
-    deleteTask(id: $id)
+    delete_task(id: $id)
   }
 `;
 
 export const ADD_COMMENT = gql`
   mutation AddComment($taskId: String!, $content: String!) {
-    addComment(taskId: $taskId, content: $content) {
+    add_comment(taskId: $taskId, content: $content) {
       id
       content
       author {

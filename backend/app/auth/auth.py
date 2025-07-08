@@ -68,7 +68,7 @@ class AuthService:
         user = db.query(User).filter(User.email == email).first()
         if not user:
             return None
-        if not AuthService.verify_password(password, user.password_hash):
+        if not AuthService.verify_password(password, str(user.password_hash)):
             return None
         return user
 
@@ -87,7 +87,7 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        user_id: str = payload.get("sub")
+        user_id: Optional[str] = payload.get("sub")
         if user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

@@ -32,7 +32,7 @@ export default function CreateProjectModal({ visible, onDismiss }: Props) {
 
   const [createProject, { loading }] = useMutation(CREATE_PROJECT, {
     onCompleted: (data) => {
-      addProject(data.createProject);
+      addProject(data.create_project);
       handleClose();
     },
     onError: (error) => {

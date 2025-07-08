@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import {
-  Title,
   Text,
   Button,
   Card,
@@ -61,7 +60,7 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Title style={styles.screenTitle}>프로필</Title>
+        <Text variant="headlineMedium" style={styles.screenTitle}>프로필</Text>
       </View>
 
       <Card style={styles.profileCard}>
@@ -72,7 +71,7 @@ export default function ProfileScreen() {
             style={[styles.avatar, { backgroundColor: theme.colors.primary }]}
           />
           <View style={styles.userInfo}>
-            <Title style={styles.userName}>{user.name}</Title>
+            <Text variant="headlineMedium" style={styles.userName}>{user.name}</Text>
             <Text style={styles.userEmail}>{user.email}</Text>
             <View style={styles.roleContainer}>
               <Text

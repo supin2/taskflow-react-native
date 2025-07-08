@@ -193,9 +193,25 @@ lsof -ti:8081 | xargs kill -9
 ```
 
 ### 서버 연결 문제
-- 백엔드 서버가 실행 중인지 확인: http://localhost:8000/health
-- 방화벽 설정 확인
-- 포트 8000이 사용 중인지 확인: `lsof -i :8000`
+```bash
+# 백엔드 서버 상태 확인
+curl http://localhost:8000/health
+
+# GraphQL 엔드포인트 확인
+curl -X POST http://localhost:8000/graphql -H "Content-Type: application/json" -d '{"query":"{ __typename }"}'
+
+# 서버 프로세스 확인
+lsof -i :8000
+
+# 기존 서버 종료 후 재시작
+lsof -ti:8000 | xargs kill -9
+cd backend && python3 main.py
+```
+
+### Network Error 422 해결
+- 백엔드 서버가 실행 중인지 확인
+- GraphQL 스키마 오류 확인
+- 인증 토큰 문제 확인 (로그인 전에는 공개 API만 사용)
 
 ### iOS 시뮬레이터 문제
 - Xcode 명령줄 도구 설치: `xcode-select --install`

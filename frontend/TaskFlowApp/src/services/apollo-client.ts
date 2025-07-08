@@ -13,6 +13,9 @@ const authLink = setContext(async (_, { headers }) => {
   // AsyncStorage에서 토큰 가져오기
   const token = await AsyncStorage.getItem('auth_token');
   
+  // 디버깅용 로그
+  console.log('Apollo Client - Token from AsyncStorage:', token);
+  
   return {
     headers: {
       ...headers,
