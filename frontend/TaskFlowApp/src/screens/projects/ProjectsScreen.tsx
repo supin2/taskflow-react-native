@@ -27,6 +27,7 @@ import { GET_PROJECTS } from '../../services/graphql/projects';
 import { useProjectsStore } from '../../store/projects';
 import { useAuthStore } from '../../store/auth';
 import { Project } from '../../types';
+import CreateProjectModal from '../../components/modals/CreateProjectModal';
 
 type ProjectsScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Projects'>,
@@ -43,6 +44,7 @@ export default function ProjectsScreen({ navigation }: Props) {
   const { projects, setProjects, setLoading, setError } = useProjectsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
 
   const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
     onCompleted: (data) => {
@@ -79,8 +81,7 @@ export default function ProjectsScreen({ navigation }: Props) {
   };
 
   const handleCreateProject = () => {
-    // TODO: 프로젝트 생성 모달 또는 화면으로 이동
-    Alert.alert('알림', '프로젝트 생성 기능은 곧 추가됩니다.');
+    setCreateModalVisible(true);
   };
 
   const renderProject = ({ item }: { item: Project }) => (
@@ -165,6 +166,11 @@ export default function ProjectsScreen({ navigation }: Props) {
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         onPress={handleCreateProject}
         label="프로젝트 생성"
+      />
+
+      <CreateProjectModal
+        visible={createModalVisible}
+        onDismiss={() => setCreateModalVisible(false)}
       />
     </View>
   );
