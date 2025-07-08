@@ -33,19 +33,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# GraphQL 라우터 생성
-def get_graphql_context(request):
-    from app.database.database import SessionLocal
+# GraphQL 라우터 생성  
+from app.database.database import SessionLocal
+
+def get_context():
+    """GraphQL 컨텍스트 생성"""
     db = SessionLocal()
-    try:
-        return get_context(request, db)
-    finally:
-        db.close()
+    return {
+        "db": db,
+        "request": None,
+        "current_user": None,
+    }
 
 graphql_app = GraphQLRouter(
     schema,
-    context_getter=get_graphql_context,
-    graphql_ide='graphiql'
+    context_getter=get_context,
+    graphql_ide="graphiql"
 )
 
 # GraphQL 엔드포인트 등록

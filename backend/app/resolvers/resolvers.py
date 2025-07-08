@@ -126,28 +126,33 @@ class QueryResolver:
 
 class MutationResolver:
     @staticmethod
-    def login(info, input: Dict[str, Any]) -> Dict[str, Any]:
+    def login(info, input):
         """
         로그인 처리 (자동 회원가입 포함)
         """
         context = info.context
+        db = context["db"]
+        
+        # 간단한 인증 서비스 생성
+        from app.services.auth_service import AuthServiceDB
+        auth_service = AuthServiceDB(db)
         
         # 기존 사용자 인증 시도
-        user = context["auth_service"].authenticate_user(input["email"], input["password"])
+        user = auth_service.authenticate_user(input.email, input.password)
         
         if not user:
             # 사용자가 없으면 자동으로 새 계정 생성
             try:
                 # 이름이 없으면 이메일에서 추출
-                name = input.get("name", input["email"].split("@")[0])
+                name = getattr(input, 'name', input.email.split("@")[0])
                 
                 auto_register_input = {
-                    "email": input["email"],
-                    "password": input["password"],
+                    "email": input.email,
+                    "password": input.password,
                     "name": name
                 }
                 
-                user = context["auth_service"].create_user_if_not_exists(auto_register_input)
+                user = auth_service.create_user_if_not_exists(auto_register_input)
                 print(f"✅ 자동 회원가입 완료: {user.email}")
                 
             except Exception as e:
@@ -158,10 +163,13 @@ class MutationResolver:
                 )
         
         access_token = AuthService.create_access_token(data={"sub": user.id})
-        return {"token": access_token, "user": user}
+        
+        # AuthPayload 객체 생성 (types.py에서 import 필요)
+        from app.schemas.types import AuthPayload
+        return AuthPayload(token=access_token, user=user)
 
     @staticmethod
-    def register(info, input: Dict[str, Any]) -> Dict[str, Any]:
+    def register(info, input):
         """
         회원가입 처리
         """
@@ -178,7 +186,10 @@ class MutationResolver:
         # 새 사용자 생성
         user = context["auth_service"].create_user(input)
         access_token = AuthService.create_access_token(data={"sub": user.id})
-        return {"token": access_token, "user": user}
+        
+        # AuthPayload 객체 생성 (types.py에서 import 필요)
+        from app.schemas.types import AuthPayload
+        return AuthPayload(token=access_token, user=user)
 
     @staticmethod
     def create_project(info, input: Dict[str, Any]) -> Project:

@@ -47,7 +47,7 @@ export default function LoginScreen({ navigation }: Props) {
     },
     onError: (error) => {
       console.error('Login error details:', error);
-      Alert.alert('로그인 실패', '서버 연결을 확인해주세요.');
+      Alert.alert('로그인 실패', error.message);
     },
   });
 
