@@ -14,7 +14,7 @@ from app.services.task_service import TaskService
 from app.services.auth_service import AuthServiceDB
 
 
-def get_context(request, db: Session = Depends(get_db)):
+def get_context(request, db: Session):
     """
     GraphQL 컨텍스트 제공
     """
