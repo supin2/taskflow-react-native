@@ -92,7 +92,6 @@ export default function AppNavigator() {
               options={{ 
                 headerShown: true,
                 title: '프로젝트 상세',
-                headerBackTitleVisible: false,
               }}
             />
             <Stack.Screen 
@@ -101,7 +100,6 @@ export default function AppNavigator() {
               options={{ 
                 headerShown: true,
                 title: '태스크 상세',
-                headerBackTitleVisible: false,
               }}
             />
           </>
@@ -114,7 +112,6 @@ export default function AppNavigator() {
               options={{ 
                 headerShown: true,
                 title: '회원가입',
-                headerBackTitleVisible: false,
               }}
             />
           </>

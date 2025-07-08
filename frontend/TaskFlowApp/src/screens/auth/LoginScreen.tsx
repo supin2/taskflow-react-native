@@ -12,8 +12,6 @@ import {
   Button,
   Text,
   Card,
-  Title,
-  Paragraph,
   ActivityIndicator,
   useTheme,
 } from 'react-native-paper';
@@ -80,12 +78,12 @@ export default function LoginScreen({ navigation }: Props) {
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Title style={[styles.title, { color: theme.colors.primary }]}>
+            <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
               TaskFlow
-            </Title>
-            <Paragraph style={styles.subtitle}>
+            </Text>
+            <Text variant="bodyMedium" style={styles.subtitle}>
               팀 협업을 위한 태스크 관리
-            </Paragraph>
+            </Text>
           </View>
 
           <Card style={styles.card}>

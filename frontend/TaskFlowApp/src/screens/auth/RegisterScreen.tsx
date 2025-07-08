@@ -12,7 +12,6 @@ import {
   Button,
   Text,
   Card,
-  Title,
   ActivityIndicator,
   useTheme,
 } from 'react-native-paper';
@@ -87,9 +86,9 @@ export default function RegisterScreen({ navigation }: Props) {
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Title style={[styles.title, { color: theme.colors.primary }]}>
+            <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
               회원가입
-            </Title>
+            </Text>
             <Text style={styles.subtitle}>
               TaskFlow에 오신 것을 환영합니다
             </Text>
