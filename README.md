@@ -72,6 +72,23 @@ python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 - **GraphQL Playground**: http://localhost:8000/graphql
 - **헬스체크**: http://localhost:8000/health
 
+#### 서버 종료 방법
+```bash
+# 방법 1: 터미널에서 Ctrl+C 입력
+# 서버가 실행 중인 터미널에서 Ctrl+C 키 조합
+
+# 방법 2: 포트 강제 종료
+lsof -ti:8000 | xargs kill -9
+
+# 방법 3: 프로세스 이름으로 종료
+ps aux | grep "python3 main.py" | grep -v grep | awk '{print $2}' | xargs kill -9
+
+# 방법 4: 모든 Python 프로세스 확인 후 선택적 종료
+ps aux | grep python3
+# 위 명령으로 PID 확인 후
+kill -9 <PID>
+```
+
 ### 2. 프론트엔드 앱 실행
 
 ```bash
@@ -190,6 +207,25 @@ npx expo start --port 8082
 
 # 또는 기존 프로세스 종료
 lsof -ti:8081 | xargs kill -9
+```
+
+### 서버 및 앱 종료 방법
+```bash
+# 백엔드 서버 종료
+lsof -ti:8000 | xargs kill -9
+
+# Metro 서버 종료
+lsof -ti:8081 | xargs kill -9
+# 또는 Metro 서버 터미널에서 Ctrl+C
+
+# 모든 Node.js 프로세스 확인
+ps aux | grep node
+
+# 모든 Python 프로세스 확인
+ps aux | grep python3
+
+# 특정 PID 종료
+kill -9 <PID>
 ```
 
 ### 서버 연결 문제
