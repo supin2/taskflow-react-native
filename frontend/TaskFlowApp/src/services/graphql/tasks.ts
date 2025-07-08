@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_TASKS = gql`
   query GetTasks($projectId: String!, $filter: TaskFilter) {
-    tasks(project_id: $projectId, filter: $filter) {
+    tasks(projectId: $projectId, filter: $filter) {
       id
       title
       description
@@ -18,10 +18,10 @@ export const GET_TASKS = gql`
         id
         name
       }
-      dueDate
-      completedAt
-      createdAt
-      updatedAt
+      due_date
+      completed_at
+      created_at
+      updated_at
     }
   }
 `;
@@ -46,10 +46,10 @@ export const GET_TASK = gql`
         name
         description
       }
-      dueDate
-      completedAt
-      createdAt
-      updatedAt
+      due_date
+      completed_at
+      created_at
+      updated_at
     }
   }
 `;
@@ -71,9 +71,9 @@ export const CREATE_TASK = gql`
         id
         name
       }
-      dueDate
-      createdAt
-      updatedAt
+      due_date
+      created_at
+      updated_at
     }
   }
 `;
@@ -95,10 +95,10 @@ export const UPDATE_TASK = gql`
         id
         name
       }
-      dueDate
-      completedAt
-      createdAt
-      updatedAt
+      due_date
+      completed_at
+      created_at
+      updated_at
     }
   }
 `;
@@ -120,8 +120,8 @@ export const ADD_COMMENT = gql`
         email
         avatar
       }
-      createdAt
-      updatedAt
+      created_at
+      updated_at
     }
   }
 `;

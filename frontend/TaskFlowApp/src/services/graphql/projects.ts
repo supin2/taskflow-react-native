@@ -6,8 +6,8 @@ export const GET_PROJECTS = gql`
       id
       name
       description
-      createdAt
-      updatedAt
+      created_at
+      updated_at
     }
   }
 `;
@@ -18,8 +18,8 @@ export const GET_PROJECT = gql`
       id
       name
       description
-      createdAt
-      updatedAt
+      created_at
+      updated_at
     }
   }
 `;
@@ -30,8 +30,8 @@ export const CREATE_PROJECT = gql`
       id
       name
       description
-      createdAt
-      updatedAt
+      created_at
+      updated_at
     }
   }
 `;
@@ -42,8 +42,8 @@ export const UPDATE_PROJECT = gql`
       id
       name
       description
-      createdAt
-      updatedAt
+      created_at
+      updated_at
     }
   }
 `;
