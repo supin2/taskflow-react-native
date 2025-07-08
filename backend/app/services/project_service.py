@@ -19,6 +19,12 @@ class ProjectService:
         ).all()
         
         return [member.project for member in project_members]
+    
+    def get_all_projects(self) -> List[Project]:
+        """
+        모든 프로젝트 반환 (개발용)
+        """
+        return self.db.query(Project).all()
 
     def get_project(self, project_id: str) -> Optional[Project]:
         """
