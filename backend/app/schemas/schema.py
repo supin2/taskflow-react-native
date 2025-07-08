@@ -20,8 +20,8 @@ class Query:
         return QueryResolver.project(info, id)
 
     @strawberry.field
-    def tasks(self, info, project_id: str, filter: Optional[TaskFilter] = None) -> List[Task]:
-        return QueryResolver.tasks(info, project_id, filter)
+    def tasks(self, info, projectId: str, filter: Optional[TaskFilter] = None) -> List[Task]:
+        return QueryResolver.tasks(info, projectId, filter)
 
     @strawberry.field
     def task(self, info, id: str) -> Optional[Task]:
@@ -74,6 +74,10 @@ class Mutation:
     @strawberry.field
     def mark_notification_read(self, info, id: str) -> bool:
         return MutationResolver.mark_notification_read(info, id)
+    
+    @strawberry.field
+    def refresh_token(self, info) -> AuthPayload:
+        return MutationResolver.refresh_token(info)
 
 
 # Subscription Type

@@ -46,13 +46,18 @@ class QueryResolver:
         """
         context = info.context
         db = context["db"]
+        current_user = context["current_user"]
         
-        # 간단한 서비스 생성
+        # 인증 확인
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # 프로젝트 서비스 생성
         from app.services.project_service import ProjectService
         project_service = ProjectService(db)
         
-        # 임시로 모든 프로젝트 반환 (인증 없이)
-        return project_service.get_all_projects()
+        # 사용자가 속한 프로젝트들 반환
+        return project_service.get_user_projects(current_user.id)
 
     @staticmethod
     def project(info, id: str) -> Optional[Project]:
@@ -75,20 +80,32 @@ class QueryResolver:
         return project
 
     @staticmethod
-    def tasks(info, project_id: str, filter: Optional[Dict[str, Any]] = None) -> List[Task]:
+    def tasks(info, projectId: str, filter = None) -> List[Task]:
         """
         프로젝트의 태스크들 반환
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        db = context["db"]
+        current_user = context["current_user"]
+        
+        # 인증 확인
         if not current_user:
-            raise HTTPException(status_code=401, detail="Not authenticated")
+            raise HTTPException(status_code=401, detail="Authentication required")
         
-        # 프로젝트 접근 권한 확인
-        if not context["project_service"].has_project_access(current_user.id, project_id):
-            raise HTTPException(status_code=403, detail="Access denied")
+        # 태스크 서비스 생성
+        from app.services.task_service import TaskService
+        task_service = TaskService(db)
         
-        return context["task_service"].get_tasks(project_id, filter)
+        # 태스크 조회
+        tasks = task_service.get_tasks(projectId, filter)
+        
+        # Enum 값들을 GraphQL 호환 형태로 변환
+        from app.schemas.types import TaskStatus as GraphQLTaskStatus, Priority as GraphQLPriority
+        for task in tasks:
+            task.status = GraphQLTaskStatus(task.status.value) if hasattr(task.status, 'value') else GraphQLTaskStatus(task.status)
+            task.priority = GraphQLPriority(task.priority.value) if hasattr(task.priority, 'value') else GraphQLPriority(task.priority)
+        
+        return tasks
 
     @staticmethod
     def task(info, id: str) -> Optional[Task]:
@@ -351,6 +368,29 @@ class MutationResolver:
         notification.is_read = True
         context["db"].commit()
         return True
+
+    @staticmethod
+    def refresh_token(info):
+        """
+        토큰 재발급
+        """
+        context = info.context
+        current_user = context["current_user"]
+        
+        # 인증 확인
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # 새 토큰 생성
+        access_token = AuthService.create_access_token(data={"sub": current_user.id})
+        
+        # AuthPayload 객체 생성
+        from app.schemas.types import AuthPayload, Role as GraphQLRole
+        
+        # Role enum을 GraphQL 호환 형식으로 변환
+        current_user.role = GraphQLRole(current_user.role.value) if hasattr(current_user.role, 'value') else GraphQLRole(current_user.role)
+        
+        return AuthPayload(token=access_token, user=current_user)
 
 
 class SubscriptionResolver:

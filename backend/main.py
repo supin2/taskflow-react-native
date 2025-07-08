@@ -35,13 +35,35 @@ app.add_middleware(
 # GraphQL 라우터 생성  
 from app.database.database import SessionLocal
 
-def get_graphql_context():
+def get_graphql_context(request):
     """GraphQL 컨텍스트 생성"""
     db = SessionLocal()
+    
+    # 토큰에서 현재 사용자 추출
+    current_user = None
+    authorization = request.headers.get("authorization")
+    if authorization:
+        try:
+            from app.auth.auth import AuthService
+            from app.models.models import User
+            
+            # Bearer 토큰 추출
+            scheme, token = authorization.split()
+            if scheme.lower() == "bearer":
+                # 토큰 검증
+                auth_service = AuthService()
+                payload = auth_service.verify_token(token)
+                if payload:
+                    user_id = payload.get("sub")
+                    if user_id:
+                        current_user = db.query(User).filter(User.id == user_id).first()
+        except Exception as e:
+            print(f"토큰 검증 실패: {e}")
+    
     return {
         "db": db,
-        "request": None,
-        "current_user": None,
+        "request": request,
+        "current_user": current_user,
     }
 
 graphql_app = GraphQLRouter(

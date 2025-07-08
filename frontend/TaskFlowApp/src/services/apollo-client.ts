@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/clien
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { REFRESH_TOKEN } from './graphql/auth';
 
 // HTTP 링크 설정
 const httpLink = createHttpLink({
@@ -24,14 +25,81 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
+// 토큰 재발급 함수
+const refreshTokens = async () => {
+  try {
+    const currentToken = await AsyncStorage.getItem('auth_token');
+    if (!currentToken) {
+      throw new Error('No token available');
+    }
+
+    const response = await fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`,
+      },
+      body: JSON.stringify({
+        query: `
+          mutation RefreshToken {
+            refreshToken {
+              token
+              user {
+                id
+                email
+                name
+                avatar
+                role
+                createdAt
+                updatedAt
+              }
+            }
+          }
+        `,
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (result.data?.refreshToken?.token) {
+      await AsyncStorage.setItem('auth_token', result.data.refreshToken.token);
+      return result.data.refreshToken.token;
+    } else {
+      throw new Error('Failed to refresh token');
+    }
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    await AsyncStorage.removeItem('auth_token');
+    throw error;
+  }
+};
+
 // 에러 처리 링크
 const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) => {
+    for (const error of graphQLErrors) {
       console.error(
-        `GraphQL error: Message: ${message}, Location: ${locations}, Path: ${path}`
+        `GraphQL error: Message: ${error.message}, Location: ${error.locations}, Path: ${error.path}`
       );
-    });
+      
+      // 401 에러인 경우 토큰 재발급 시도
+      if (error.message.includes('Authentication required') || error.message.includes('Not authenticated')) {
+        refreshTokens().then((newToken) => {
+          // 새 토큰으로 요청 재시도
+          const oldHeaders = operation.getContext().headers;
+          operation.setContext({
+            headers: {
+              ...oldHeaders,
+              authorization: `Bearer ${newToken}`,
+            },
+          });
+          return forward(operation);
+        }).catch((refreshError) => {
+          console.error('Token refresh failed, redirecting to login:', refreshError);
+          // 여기서 로그인 화면으로 리다이렉트
+        });
+      }
+    }
   }
 
   if (networkError) {
@@ -39,10 +107,22 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
     console.error(`Operation that caused error: ${operation.operationName}`);
     console.error(`Variables: ${JSON.stringify(operation.variables)}`);
     
-    // 401 에러인 경우 토큰 제거 및 로그인 화면으로 이동
+    // 401 에러인 경우 토큰 재발급 시도
     if ('statusCode' in networkError && networkError.statusCode === 401) {
-      AsyncStorage.removeItem('auth_token');
-      // 여기서 로그인 화면으로 네비게이션 처리
+      refreshTokens().then((newToken) => {
+        // 새 토큰으로 요청 재시도
+        const oldHeaders = operation.getContext().headers;
+        operation.setContext({
+          headers: {
+            ...oldHeaders,
+            authorization: `Bearer ${newToken}`,
+          },
+        });
+        return forward(operation);
+      }).catch((refreshError) => {
+        console.error('Token refresh failed, redirecting to login:', refreshError);
+        // 여기서 로그인 화면으로 리다이렉트
+      });
     }
   }
 });
@@ -56,13 +136,13 @@ const client = new ApolloClient({
         fields: {
           tasks: {
             // 태스크 목록 캐싱 정책
-            merge(existing = [], incoming) {
+            merge(_, incoming) {
               return incoming;
             },
           },
           projects: {
             // 프로젝트 목록 캐싱 정책
-            merge(existing = [], incoming) {
+            merge(_, incoming) {
               return incoming;
             },
           },

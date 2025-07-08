@@ -47,3 +47,20 @@ export const GET_ME = gql`
     }
   }
 `;
+
+export const REFRESH_TOKEN = gql`
+  mutation RefreshToken {
+    refreshToken {
+      token
+      user {
+        id
+        email
+        name
+        avatar
+        role
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
