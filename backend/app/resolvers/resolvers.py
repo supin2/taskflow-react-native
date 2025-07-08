@@ -8,20 +8,27 @@ from app.models.models import User, Project, Task, Comment, ProjectMember, Notif
 # GraphQL 입력 및 출력 타입들은 별도 파일에 정의
 from app.models.models import Role, TaskStatus, Priority
 from app.auth.auth import AuthService, security
+from app.auth.middleware import auth_middleware
 from app.services.project_service import ProjectService
 from app.services.task_service import TaskService
 from app.services.auth_service import AuthServiceDB
 
 
-def get_context(db: Session = Depends(get_db)):
+def get_context(request, db: Session = Depends(get_db)):
     """
     GraphQL 컨텍스트 제공
     """
+    # 요청에서 현재 사용자 추출
+    current_user = auth_middleware.get_current_user_from_request(request)
+    
     return {
         "db": db,
+        "request": request,
+        "current_user": current_user,
         "auth_service": AuthServiceDB(db),
         "project_service": ProjectService(db),
         "task_service": TaskService(db),
+        "auth_middleware": auth_middleware,
     }
 
 
@@ -32,9 +39,7 @@ class QueryResolver:
         현재 인증된 사용자 반환
         """
         context = info.context
-        # 여기서 JWT 토큰을 통해 현재 사용자 확인
-        # 실제 구현에서는 인증 미들웨어를 통해 처리
-        return context["auth_service"].get_current_user()
+        return context["current_user"]
 
     @staticmethod
     def projects(info) -> List[Project]:
@@ -42,7 +47,7 @@ class QueryResolver:
         사용자가 속한 프로젝트들 반환
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         

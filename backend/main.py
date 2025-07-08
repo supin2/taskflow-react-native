@@ -34,9 +34,17 @@ app.add_middleware(
 )
 
 # GraphQL 라우터 생성
+def get_graphql_context(request):
+    from app.database.database import SessionLocal
+    db = SessionLocal()
+    try:
+        return get_context(request, db)
+    finally:
+        db.close()
+
 graphql_app = GraphQLRouter(
     schema,
-    context_getter=get_context
+    context_getter=get_graphql_context
 )
 
 # GraphQL 엔드포인트 등록
