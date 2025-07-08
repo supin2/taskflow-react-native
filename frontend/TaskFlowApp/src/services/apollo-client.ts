@@ -36,6 +36,8 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
 
   if (networkError) {
     console.error(`Network error: ${networkError}`);
+    console.error(`Operation that caused error: ${operation.operationName}`);
+    console.error(`Variables: ${JSON.stringify(operation.variables)}`);
     
     // 401 에러인 경우 토큰 제거 및 로그인 화면으로 이동
     if ('statusCode' in networkError && networkError.statusCode === 401) {

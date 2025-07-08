@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from app.models.models import User, Role
-from app.schemas.schema import RegisterInput
 from app.auth.auth import AuthService
 
 
@@ -25,12 +24,13 @@ class AuthServiceDB:
         
         return user
 
-    def create_user(self, input: RegisterInput) -> User:
+    def create_user(self, input) -> User:
         """
         새 사용자 생성
         """
         # 이메일 중복 확인
-        existing_user = self.db.query(User).filter(User.email == input.email).first()
+        email = input.get("email") if isinstance(input, dict) else input.email
+        existing_user = self.db.query(User).filter(User.email == email).first()
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -38,12 +38,14 @@ class AuthServiceDB:
             )
         
         # 비밀번호 해싱
-        hashed_password = self.auth_service.hash_password(input.password)
+        password = input.get("password") if isinstance(input, dict) else input.password
+        hashed_password = self.auth_service.hash_password(password)
         
         # 새 사용자 생성
+        name = input.get("name") if isinstance(input, dict) else input.name
         user = User(
-            email=input.email,
-            name=input.name,
+            email=email,
+            name=name,
             password_hash=hashed_password,
             role=Role.MEMBER
         )

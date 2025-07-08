@@ -38,10 +38,15 @@ export default function LoginScreen({ navigation }: Props) {
     password: 'admin123',
   });
 
-  // 개발용 자동 로그인 (주석 처리)
-  // React.useEffect(() => {
-  //   handleLogin();
-  // }, []);
+  // 개발용 자동 로그인
+  React.useEffect(() => {
+    // 1초 후 자동 로그인 시도
+    const timer = setTimeout(() => {
+      handleLogin();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const [loginMutation, { loading }] = useMutation(LOGIN, {
     onCompleted: (data) => {
