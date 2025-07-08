@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from datetime import datetime
 
 from app.models.models import Task, Comment, TaskStatus, Priority, Activity
-from app.schemas.schema import CreateTaskInput, UpdateTaskInput, TaskFilter
+from app.schemas.types import CreateTaskInput, UpdateTaskInput, TaskFilter
 
 
 class TaskService:

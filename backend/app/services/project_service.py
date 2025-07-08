@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from app.models.models import Project, ProjectMember, User, Role
-from app.schemas.schema import CreateProjectInput, UpdateProjectInput
+from app.schemas.types import CreateProjectInput, UpdateProjectInput
 
 
 class ProjectService:
