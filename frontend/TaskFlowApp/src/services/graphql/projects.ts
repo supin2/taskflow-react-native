@@ -6,8 +6,8 @@ export const GET_PROJECTS = gql`
       id
       name
       description
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -18,38 +18,38 @@ export const GET_PROJECT = gql`
       id
       name
       description
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const CREATE_PROJECT = gql`
   mutation CreateProject($input: CreateProjectInput!) {
-    create_project(input: $input) {
+    createProject(input: $input) {
       id
       name
       description
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const UPDATE_PROJECT = gql`
   mutation UpdateProject($id: String!, $input: UpdateProjectInput!) {
-    update_project(id: $id, input: $input) {
+    updateProject(id: $id, input: $input) {
       id
       name
       description
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const DELETE_PROJECT = gql`
   mutation DeleteProject($id: String!) {
-    delete_project(id: $id)
+    deleteProject(id: $id)
   }
 `;

@@ -18,10 +18,10 @@ export const GET_TASKS = gql`
         id
         name
       }
-      due_date
-      completed_at
-      created_at
-      updated_at
+      dueDate
+      completedAt
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -46,17 +46,17 @@ export const GET_TASK = gql`
         name
         description
       }
-      due_date
-      completed_at
-      created_at
-      updated_at
+      dueDate
+      completedAt
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const CREATE_TASK = gql`
   mutation CreateTask($input: CreateTaskInput!) {
-    create_task(input: $input) {
+    createTask(input: $input) {
       id
       title
       description
@@ -71,16 +71,16 @@ export const CREATE_TASK = gql`
         id
         name
       }
-      due_date
-      created_at
-      updated_at
+      dueDate
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const UPDATE_TASK = gql`
   mutation UpdateTask($id: String!, $input: UpdateTaskInput!) {
-    update_task(id: $id, input: $input) {
+    updateTask(id: $id, input: $input) {
       id
       title
       description
@@ -95,23 +95,23 @@ export const UPDATE_TASK = gql`
         id
         name
       }
-      due_date
-      completed_at
-      created_at
-      updated_at
+      dueDate
+      completedAt
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: String!) {
-    delete_task(id: $id)
+    deleteTask(id: $id)
   }
 `;
 
 export const ADD_COMMENT = gql`
   mutation AddComment($taskId: String!, $content: String!) {
-    add_comment(task_id: $taskId, content: $content) {
+    addComment(taskId: $taskId, content: $content) {
       id
       content
       author {
@@ -120,8 +120,8 @@ export const ADD_COMMENT = gql`
         email
         avatar
       }
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;

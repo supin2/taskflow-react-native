@@ -50,8 +50,8 @@ const refreshTokens = async () => {
                 name
                 avatar
                 role
-                created_at
-                updated_at
+                createdAt
+                updatedAt
               }
             }
           }

@@ -10,8 +10,8 @@ export const LOGIN = gql`
         name
         avatar
         role
-        created_at
-        updated_at
+        createdAt
+        updatedAt
       }
     }
   }
@@ -27,8 +27,8 @@ export const REGISTER = gql`
         name
         avatar
         role
-        created_at
-        updated_at
+        createdAt
+        updatedAt
       }
     }
   }
@@ -42,8 +42,8 @@ export const GET_ME = gql`
       name
       avatar
       role
-      created_at
-      updated_at
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -58,8 +58,8 @@ export const REFRESH_TOKEN = gql`
         name
         avatar
         role
-        created_at
-        updated_at
+        createdAt
+        updatedAt
       }
     }
   }
