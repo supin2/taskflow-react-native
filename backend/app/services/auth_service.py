@@ -37,6 +37,26 @@ class AuthServiceDB:
                 detail="Email already registered"
             )
         
+        return self._create_new_user(input)
+    
+    def create_user_if_not_exists(self, input) -> User:
+        """
+        사용자가 없으면 생성, 있으면 기존 사용자 반환
+        """
+        # 이메일 중복 확인
+        email = input.get("email") if isinstance(input, dict) else input.email
+        existing_user = self.db.query(User).filter(User.email == email).first()
+        if existing_user:
+            return existing_user
+        
+        return self._create_new_user(input)
+    
+    def _create_new_user(self, input) -> User:
+        """
+        실제 사용자 생성 로직
+        """
+        email = input.get("email") if isinstance(input, dict) else input.email
+        
         # 비밀번호 해싱
         password = input.get("password") if isinstance(input, dict) else input.password
         hashed_password = self.auth_service.hash_password(password)

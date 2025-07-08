@@ -128,15 +128,34 @@ class MutationResolver:
     @staticmethod
     def login(info, input: Dict[str, Any]) -> Dict[str, Any]:
         """
-        로그인 처리
+        로그인 처리 (자동 회원가입 포함)
         """
         context = info.context
+        
+        # 기존 사용자 인증 시도
         user = context["auth_service"].authenticate_user(input["email"], input["password"])
+        
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password"
-            )
+            # 사용자가 없으면 자동으로 새 계정 생성
+            try:
+                # 이름이 없으면 이메일에서 추출
+                name = input.get("name", input["email"].split("@")[0])
+                
+                auto_register_input = {
+                    "email": input["email"],
+                    "password": input["password"],
+                    "name": name
+                }
+                
+                user = context["auth_service"].create_user_if_not_exists(auto_register_input)
+                print(f"✅ 자동 회원가입 완료: {user.email}")
+                
+            except Exception as e:
+                print(f"❌ 자동 회원가입 실패: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Incorrect email or password"
+                )
         
         access_token = AuthService.create_access_token(data={"sub": user.id})
         return {"token": access_token, "user": user}
