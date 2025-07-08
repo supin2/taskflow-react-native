@@ -228,7 +228,7 @@ class MutationResolver:
         return AuthPayload(token=access_token, user=user)
 
     @staticmethod
-    def create_project(info, input: Dict[str, Any]) -> Project:
+    def create_project(info, input) -> Project:
         """
         프로젝트 생성
         """
@@ -240,7 +240,7 @@ class MutationResolver:
         return context["project_service"].create_project(current_user.id, input)
 
     @staticmethod
-    def update_project(info, id: str, input: Dict[str, Any]) -> Project:
+    def update_project(info, id: str, input) -> Project:
         """
         프로젝트 수정
         """
@@ -272,7 +272,7 @@ class MutationResolver:
         return context["project_service"].delete_project(id)
 
     @staticmethod
-    def create_task(info, input: Dict[str, Any]) -> Task:
+    def create_task(info, input) -> Task:
         """
         태스크 생성
         """
@@ -282,13 +282,13 @@ class MutationResolver:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
         # 프로젝트 접근 권한 확인
-        if not context["project_service"].has_project_access(current_user.id, input["project_id"]):
+        if not context["project_service"].has_project_access(current_user.id, input.projectId):
             raise HTTPException(status_code=403, detail="Access denied")
         
         return context["task_service"].create_task(current_user.id, input)
 
     @staticmethod
-    def update_task(info, id: str, input: Dict[str, Any]) -> Task:
+    def update_task(info, id: str, input) -> Task:
         """
         태스크 수정
         """

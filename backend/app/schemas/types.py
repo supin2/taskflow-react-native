@@ -139,10 +139,10 @@ class UpdateProjectInput:
 class CreateTaskInput:
     title: str
     description: Optional[str] = None
-    project_id: str
-    assignee_id: Optional[str] = None
+    projectId: str
+    assigneeId: Optional[str] = None
     priority: Priority = Priority.MEDIUM
-    due_date: Optional[datetime] = None
+    dueDate: Optional[datetime] = None
 
 
 @strawberry.input
@@ -151,15 +151,15 @@ class UpdateTaskInput:
     description: Optional[str] = None
     status: Optional[TaskStatus] = None
     priority: Optional[Priority] = None
-    assignee_id: Optional[str] = None
-    due_date: Optional[datetime] = None
+    assigneeId: Optional[str] = None
+    dueDate: Optional[datetime] = None
 
 
 @strawberry.input
 class TaskFilter:
     status: Optional[TaskStatus] = None
     priority: Optional[Priority] = None
-    assignee_id: Optional[str] = None
+    assigneeId: Optional[str] = None
     search: Optional[str] = None
 
 

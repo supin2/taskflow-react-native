@@ -22,8 +22,8 @@ class TaskService:
                 query = query.filter(Task.status == filter.status)
             if filter.priority:
                 query = query.filter(Task.priority == filter.priority)
-            if filter.assignee_id:
-                query = query.filter(Task.assignee_id == filter.assignee_id)
+            if filter.assigneeId:
+                query = query.filter(Task.assignee_id == filter.assigneeId)
             if filter.search:
                 query = query.filter(
                     Task.title.contains(filter.search) | 
@@ -45,10 +45,10 @@ class TaskService:
         task = Task(
             title=input.title,
             description=input.description,
-            project_id=input.project_id,
-            assignee_id=input.assignee_id,
+            project_id=input.projectId,
+            assignee_id=input.assigneeId,
             priority=input.priority,
-            due_date=input.due_date,
+            due_date=input.dueDate,
             status=TaskStatus.TODO
         )
         
@@ -100,13 +100,13 @@ class TaskService:
             changes.append(f"우선순위를 '{task.priority.value}'에서 '{input.priority.value}'로 변경")
             task.priority = input.priority
         
-        if input.assignee_id is not None and input.assignee_id != task.assignee_id:
+        if input.assigneeId is not None and input.assigneeId != task.assignee_id:
             changes.append("담당자를 변경")
-            task.assignee_id = input.assignee_id
+            task.assignee_id = input.assigneeId
         
-        if input.due_date is not None and input.due_date != task.due_date:
+        if input.dueDate is not None and input.dueDate != task.due_date:
             changes.append("마감일을 변경")
-            task.due_date = input.due_date
+            task.due_date = input.dueDate
         
         self.db.commit()
         self.db.refresh(task)

@@ -44,39 +44,39 @@ class Mutation:
         return MutationResolver.register(info, input)
 
     @strawberry.field
-    def create_project(self, info, input: CreateProjectInput) -> Project:
+    def createProject(self, info, input: CreateProjectInput) -> Project:
         return MutationResolver.create_project(info, input)
 
     @strawberry.field
-    def update_project(self, info, id: str, input: UpdateProjectInput) -> Project:
+    def updateProject(self, info, id: str, input: UpdateProjectInput) -> Project:
         return MutationResolver.update_project(info, id, input)
 
     @strawberry.field
-    def delete_project(self, info, id: str) -> bool:
+    def deleteProject(self, info, id: str) -> bool:
         return MutationResolver.delete_project(info, id)
 
     @strawberry.field
-    def create_task(self, info, input: CreateTaskInput) -> Task:
+    def createTask(self, info, input: CreateTaskInput) -> Task:
         return MutationResolver.create_task(info, input)
 
     @strawberry.field
-    def update_task(self, info, id: str, input: UpdateTaskInput) -> Task:
+    def updateTask(self, info, id: str, input: UpdateTaskInput) -> Task:
         return MutationResolver.update_task(info, id, input)
 
     @strawberry.field
-    def delete_task(self, info, id: str) -> bool:
+    def deleteTask(self, info, id: str) -> bool:
         return MutationResolver.delete_task(info, id)
 
     @strawberry.field
-    def add_comment(self, info, task_id: str, content: str) -> Comment:
-        return MutationResolver.add_comment(info, task_id, content)
+    def addComment(self, info, taskId: str, content: str) -> Comment:
+        return MutationResolver.add_comment(info, taskId, content)
 
     @strawberry.field
-    def mark_notification_read(self, info, id: str) -> bool:
+    def markNotificationRead(self, info, id: str) -> bool:
         return MutationResolver.mark_notification_read(info, id)
     
     @strawberry.field
-    def refresh_token(self, info) -> AuthPayload:
+    def refreshToken(self, info) -> AuthPayload:
         return MutationResolver.refresh_token(info)
 
 
