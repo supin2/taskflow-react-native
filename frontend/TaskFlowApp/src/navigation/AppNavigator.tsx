@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator, Text } from 'react-native-paper';
+import { useQuery } from '@apollo/client';
 
 import { useAuthStore } from '../store/auth';
+import { GET_ME } from '../services/graphql/auth';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ProjectsScreen from '../screens/projects/ProjectsScreen';
@@ -74,7 +78,41 @@ function MainTabNavigator() {
 }
 
 export default function AppNavigator() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, token, logout } = useAuthStore();
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [isValidToken, setIsValidToken] = useState(false);
+
+  // 서버에서 토큰 유효성 검증
+  const { data: userData, loading: userLoading, error: userError } = useQuery(GET_ME, {
+    skip: !token, // 토큰이 없으면 쿼리 실행 안 함
+    errorPolicy: 'all',
+    onCompleted: (data) => {
+      if (data?.me) {
+        setIsValidToken(true);
+      }
+      setIsInitializing(false);
+    },
+    onError: (error) => {
+      console.log('Token validation failed:', error);
+      setIsValidToken(false);
+      setIsInitializing(false);
+      // 토큰이 유효하지 않으면 로그아웃
+      logout();
+    }
+  });
+
+  // 초기화 중이거나 토큰이 있는데 유효성 검증 중인 경우 로딩 화면
+  if (isInitializing || (token && userLoading)) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6366f1" />
+        <Text style={styles.loadingText}>앱을 초기화하는 중...</Text>
+      </View>
+    );
+  }
+
+  // 토큰이 있고 유효한 경우에만 인증된 것으로 간주
+  const isAuthenticatedAndValid = isAuthenticated && token && isValidToken;
 
   return (
     <NavigationContainer>
@@ -83,7 +121,7 @@ export default function AppNavigator() {
           headerShown: false,
         }}
       >
-        {isAuthenticated ? (
+        {isAuthenticatedAndValid ? (
           <>
             <Stack.Screen name="Main" component={MainTabNavigator} />
             <Stack.Screen 
@@ -120,3 +158,17 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+});
