@@ -69,6 +69,16 @@ export interface CreateTaskInput {
   dueDate?: string;
 }
 
+export interface UpdateTaskInput {
+  id: string;
+  title?: string;
+  description?: string;
+  status?: 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE';
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  assigneeId?: string;
+  dueDate?: string;
+}
+
 export interface TaskFilter {
   status?: 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE';
   priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
