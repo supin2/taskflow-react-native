@@ -56,7 +56,7 @@ export default function CreateProjectModal({ visible, onDismiss }: Props) {
         variables: {
           input: {
             name: formData.name.trim(),
-            description: formData.description.trim() || undefined,
+            description: formData.description?.trim() || undefined,
           },
         },
       });
