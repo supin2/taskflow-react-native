@@ -82,11 +82,15 @@ export default function AppNavigator() {
   const [isInitializing, setIsInitializing] = useState(true);
   const [isValidToken, setIsValidToken] = useState(false);
 
-  // 토큰이 없으면 초기화 완료
+  // 토큰이 없으면 초기화 완료, 토큰이 있으면 유효하다고 가정
   useEffect(() => {
     if (!token) {
       setIsInitializing(false);
       setIsValidToken(false);
+    } else {
+      // 토큰이 있으면 일단 유효하다고 가정 (GET_ME 쿼리로 재검증)
+      setIsValidToken(true);
+      setIsInitializing(false);
     }
   }, [token]);
 
@@ -97,8 +101,9 @@ export default function AppNavigator() {
     onCompleted: (data) => {
       if (data?.me) {
         setIsValidToken(true);
+      } else {
+        setIsValidToken(false);
       }
-      setIsInitializing(false);
     },
     onError: (error) => {
       console.log('Token validation failed:', error);
