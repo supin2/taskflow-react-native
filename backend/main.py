@@ -58,10 +58,18 @@ async def get_context(request: Request):
         except Exception as e:
             print(f"토큰 검증 실패: {e}")
     
+    # 서비스 인스턴스 생성
+    from app.services.project_service import ProjectService
+    from app.services.task_service import TaskService
+    from app.services.auth_service import AuthServiceDB
+    
     return {
         "db": db,
         "request": request,
         "current_user": current_user,
+        "project_service": ProjectService(db),
+        "task_service": TaskService(db),
+        "auth_service": AuthServiceDB(db),
     }
 
 # GraphQL 라우터 생성
