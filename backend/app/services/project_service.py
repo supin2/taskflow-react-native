@@ -14,11 +14,48 @@ class ProjectService:
         """
         사용자가 속한 프로젝트들 반환
         """
-        project_members = self.db.query(ProjectMember).filter(
-            ProjectMember.user_id == user_id
-        ).all()
-        
-        return [member.project for member in project_members]
+        try:
+            print(f"🔍 get_user_projects for user: {user_id}")
+            
+            # ProjectMember와 Project를 JOIN하여 가져오기
+            from sqlalchemy.orm import joinedload
+            
+            project_members = self.db.query(ProjectMember).options(
+                joinedload(ProjectMember.project)
+            ).filter(
+                ProjectMember.user_id == user_id
+            ).all()
+            
+            print(f"🔍 Found {len(project_members)} project members")
+            
+            projects = []
+            for member in project_members:
+                if member.project:
+                    projects.append(member.project)
+                    print(f"✅ Added project: {member.project.name}")
+            
+            print(f"✅ Returning {len(projects)} projects")
+            return projects
+            
+        except Exception as e:
+            print(f"❌ Error in get_user_projects: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            # 대안: 직접 JOIN 쿼리 사용
+            try:
+                projects = self.db.query(Project).join(
+                    ProjectMember, Project.id == ProjectMember.project_id
+                ).filter(
+                    ProjectMember.user_id == user_id
+                ).all()
+                
+                print(f"✅ Alternative query returned {len(projects)} projects")
+                return projects
+                
+            except Exception as e2:
+                print(f"❌ Alternative query also failed: {e2}")
+                return []
     
     def get_all_projects(self) -> List[Project]:
         """
