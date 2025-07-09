@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -12,10 +12,12 @@ import {
 } from 'react-native-paper';
 
 import { useAuthStore } from '../../store/auth';
+import EditProfileModal from '../../components/modals/EditProfileModal';
 
 export default function ProfileScreen() {
   const theme = useTheme();
   const { user, logout } = useAuthStore();
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const handleLogout = () => {
     Alert.alert(
@@ -26,6 +28,14 @@ export default function ProfileScreen() {
         { text: '로그아웃', style: 'destructive', onPress: logout },
       ]
     );
+  };
+
+  const handleEditProfile = () => {
+    setIsEditModalVisible(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalVisible(false);
   };
 
   const getRoleText = (role: string) => {
@@ -95,7 +105,7 @@ export default function ProfileScreen() {
             description="개인정보 및 보안 설정"
             left={(props) => <List.Icon {...props} icon="account-cog" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => Alert.alert('알림', '계정 설정 기능은 곧 추가됩니다.')}
+            onPress={handleEditProfile}
           />
           <Divider />
           <List.Item
@@ -127,6 +137,11 @@ export default function ProfileScreen() {
           로그아웃
         </Button>
       </View>
+
+      <EditProfileModal
+        visible={isEditModalVisible}
+        onDismiss={handleCloseEditModal}
+      />
     </SafeAreaView>
   );
 }
