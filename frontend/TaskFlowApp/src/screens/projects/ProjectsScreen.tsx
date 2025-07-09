@@ -69,13 +69,25 @@ export default function ProjectsScreen({ navigation }: Props) {
 
   useEffect(() => {
     if (searchQuery) {
-      const filtered = projects.filter(project =>
-        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const filtered = projects.filter(project => {
+        // 유효하지 않은 프로젝트 필터링
+        if (!project || !project.id || !project.name) {
+          console.warn('검색 필터링 중 유효하지 않은 프로젝트:', project);
+          return false;
+        }
+        
+        return (
+          project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      console.log('검색 필터링 결과:', filtered);
       setFilteredProjects(filtered);
     } else {
-      setFilteredProjects(projects);
+      // 검색어가 없을 때도 유효한 프로젝트만 표시
+      const validProjects = projects.filter(project => project && project.id);
+      console.log('전체 프로젝트 (유효한 것만):', validProjects);
+      setFilteredProjects(validProjects);
     }
   }, [projects, searchQuery]);
 

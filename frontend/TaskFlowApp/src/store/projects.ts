@@ -22,10 +22,28 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
   error: null,
   
   setProjects: (projects: Project[]) => {
-    set({ projects, error: null });
+    // 유효한 프로젝트만 필터링
+    const validProjects = projects.filter(project => 
+      project && 
+      project.id && 
+      typeof project.id === 'string' && 
+      project.name
+    );
+    
+    if (validProjects.length !== projects.length) {
+      console.warn('Invalid projects filtered out:', projects.length - validProjects.length);
+    }
+    
+    set({ projects: validProjects, error: null });
   },
   
   addProject: (project: Project) => {
+    // 유효한 프로젝트인지 확인
+    if (!project || !project.id || !project.name) {
+      console.warn('Invalid project not added:', project);
+      return;
+    }
+    
     set(state => ({ 
       projects: [...state.projects, project],
       error: null 
