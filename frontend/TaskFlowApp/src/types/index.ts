@@ -85,3 +85,9 @@ export interface TaskFilter {
   assigneeId?: string;
   search?: string;
 }
+
+export interface UpdateProfileInput {
+  name?: string;
+  email?: string;
+  avatar?: string;
+}

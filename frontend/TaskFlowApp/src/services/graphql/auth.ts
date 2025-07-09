@@ -64,3 +64,17 @@ export const REFRESH_TOKEN = gql`
     }
   }
 `;
+
+export const UPDATE_PROFILE = gql`
+  mutation UpdateProfile($input: UpdateProfileInput!) {
+    updateProfile(input: $input) {
+      id
+      email
+      name
+      avatar
+      role
+      createdAt
+      updatedAt
+    }
+  }
+`;
