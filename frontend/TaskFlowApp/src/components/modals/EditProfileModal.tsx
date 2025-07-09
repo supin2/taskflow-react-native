@@ -141,78 +141,76 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
       visible={visible}
       onDismiss={handleCancel}
       contentContainerStyle={styles.modalContainer}
+      dismissable={true}
     >
-        <SafeAreaView style={styles.container} edges={['top']}>
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text variant="headlineSmall" style={styles.title}>
-                프로필 편집
-              </Text>
-              
-              <ScrollView style={styles.scrollView}>
-                <View style={styles.formContainer}>
-                  <TextInput
-                    label="이름"
-                    value={formData.name}
-                    onChangeText={(text) => {
-                      setFormData(prev => ({ ...prev, name: text }));
-                      if (formErrors.name) {
-                        setFormErrors(prev => ({ ...prev, name: undefined }));
-                      }
-                    }}
-                    error={!!formErrors.name}
-                    style={styles.input}
-                    mode="outlined"
-                    placeholder="이름을 입력해주세요"
-                  />
-                  <HelperText type="error" visible={!!formErrors.name}>
-                    {formErrors.name}
-                  </HelperText>
+      <View style={styles.modalOverlay}>
+        <Card style={styles.card}>
+          <Card.Content>
+          <Text variant="headlineSmall" style={styles.title}>
+            프로필 편집
+          </Text>
+          <View style={styles.formContainer}>
+            <TextInput
+              label="이름"
+              value={formData.name}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, name: text }));
+                if (formErrors.name) {
+                  setFormErrors(prev => ({ ...prev, name: undefined }));
+                }
+              }}
+              error={!!formErrors.name}
+              style={styles.input}
+              mode="outlined"
+              placeholder="이름을 입력해주세요"
+            />
+            <HelperText type="error" visible={!!formErrors.name}>
+              {formErrors.name}
+            </HelperText>
 
-                  <TextInput
-                    label="이메일"
-                    value={formData.email}
-                    onChangeText={(text) => {
-                      setFormData(prev => ({ ...prev, email: text }));
-                      if (formErrors.email) {
-                        setFormErrors(prev => ({ ...prev, email: undefined }));
-                      }
-                    }}
-                    error={!!formErrors.email}
-                    style={styles.input}
-                    mode="outlined"
-                    placeholder="이메일을 입력해주세요"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                  />
-                  <HelperText type="error" visible={!!formErrors.email}>
-                    {formErrors.email}
-                  </HelperText>
-                </View>
-              </ScrollView>
+            <TextInput
+              label="이메일"
+              value={formData.email}
+              onChangeText={(text) => {
+                setFormData(prev => ({ ...prev, email: text }));
+                if (formErrors.email) {
+                  setFormErrors(prev => ({ ...prev, email: undefined }));
+                }
+              }}
+              error={!!formErrors.email}
+              style={styles.input}
+              mode="outlined"
+              placeholder="이메일을 입력해주세요"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <HelperText type="error" visible={!!formErrors.email}>
+              {formErrors.email}
+            </HelperText>
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="outlined"
+                onPress={handleCancel}
+                style={styles.cancelButton}
+                disabled={isLoading}
+              >
+                취소
+              </Button>
+              <Button
+                mode="contained"
+                onPress={handleSubmit}
+                style={styles.saveButton}
+                disabled={isLoading || !hasChanges}
+                loading={isLoading}
+              >
+                {isLoading ? '저장 중...' : '저장'}
+              </Button>
+            </View>
+          </View>
 
-              <View style={styles.buttonContainer}>
-                <Button
-                  mode="outlined"
-                  onPress={handleCancel}
-                  style={styles.cancelButton}
-                  disabled={isLoading}
-                >
-                  취소
-                </Button>
-                <Button
-                  mode="contained"
-                  onPress={handleSubmit}
-                  style={styles.saveButton}
-                  disabled={isLoading || !hasChanges}
-                  loading={isLoading}
-                >
-                  {isLoading ? '저장 중...' : '저장'}
-                </Button>
-              </View>
-            </Card.Content>
-          </Card>
-        </SafeAreaView>
+          </Card.Content>
+        </Card>
+      </View>
     </Modal>
   );
 }
@@ -220,28 +218,28 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  container: {
+  modalOverlay: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   card: {
+    width: '100%',
+    maxWidth: 400,
     borderRadius: 16,
-    elevation: 4,
-    maxHeight: '80%',
+    elevation: 8,
+    backgroundColor: 'white',
   },
   title: {
     textAlign: 'center',
     marginBottom: 24,
     fontWeight: 'bold',
   },
-  scrollView: {
-    maxHeight: 300,
-  },
   formContainer: {
-    gap: 8,
+    gap: 2,
   },
   input: {
     marginBottom: 8,
@@ -249,8 +247,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 24,
-    gap: 12,
+    gap: 10,
   },
   cancelButton: {
     flex: 1,
