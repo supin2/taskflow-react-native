@@ -82,6 +82,14 @@ export default function AppNavigator() {
   const [isInitializing, setIsInitializing] = useState(true);
   const [isValidToken, setIsValidToken] = useState(false);
 
+  // 토큰이 없으면 초기화 완료
+  useEffect(() => {
+    if (!token) {
+      setIsInitializing(false);
+      setIsValidToken(false);
+    }
+  }, [token]);
+
   // 서버에서 토큰 유효성 검증
   const { data: userData, loading: userLoading, error: userError } = useQuery(GET_ME, {
     skip: !token, // 토큰이 없으면 쿼리 실행 안 함
