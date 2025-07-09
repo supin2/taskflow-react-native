@@ -126,6 +126,16 @@ export default function ProjectsScreen({ navigation }: Props) {
     </View>
   );
 
+  // 사용자 정보가 없으면 로딩 화면 표시
+  if (!user) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+        <Text style={styles.loadingText}>사용자 정보를 불러오는 중...</Text>
+      </View>
+    );
+  }
+
   if (loading && projects.length === 0) {
     return (
       <View style={styles.loadingContainer}>
