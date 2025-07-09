@@ -144,6 +144,11 @@ class QueryResolver:
         if not context["project_service"].has_project_access(current_user.id, task.project_id):
             raise HTTPException(status_code=403, detail="Access denied")
         
+        # Enum 값들을 GraphQL 호환 형태로 변환
+        from app.schemas.types import TaskStatus as GraphQLTaskStatus, Priority as GraphQLPriority
+        task.status = GraphQLTaskStatus(task.status.value) if hasattr(task.status, 'value') else GraphQLTaskStatus(task.status)
+        task.priority = GraphQLPriority(task.priority.value) if hasattr(task.priority, 'value') else GraphQLPriority(task.priority)
+        
         return task
 
     @staticmethod
@@ -304,7 +309,14 @@ class MutationResolver:
         if not context["project_service"].has_project_access(current_user.id, input.projectId):
             raise HTTPException(status_code=403, detail="Access denied")
         
-        return context["task_service"].create_task(current_user.id, input)
+        task = context["task_service"].create_task(current_user.id, input)
+        
+        # Enum 값들을 GraphQL 호환 형태로 변환
+        from app.schemas.types import TaskStatus as GraphQLTaskStatus, Priority as GraphQLPriority
+        task.status = GraphQLTaskStatus(task.status.value) if hasattr(task.status, 'value') else GraphQLTaskStatus(task.status)
+        task.priority = GraphQLPriority(task.priority.value) if hasattr(task.priority, 'value') else GraphQLPriority(task.priority)
+        
+        return task
 
     @staticmethod
     def update_task(info, id: str, input) -> Task:
@@ -324,7 +336,14 @@ class MutationResolver:
         if not context["project_service"].has_project_access(current_user.id, task.project_id):
             raise HTTPException(status_code=403, detail="Access denied")
         
-        return context["task_service"].update_task(id, input)
+        updated_task = context["task_service"].update_task(id, input)
+        
+        # Enum 값들을 GraphQL 호환 형태로 변환
+        from app.schemas.types import TaskStatus as GraphQLTaskStatus, Priority as GraphQLPriority
+        updated_task.status = GraphQLTaskStatus(updated_task.status.value) if hasattr(updated_task.status, 'value') else GraphQLTaskStatus(updated_task.status)
+        updated_task.priority = GraphQLPriority(updated_task.priority.value) if hasattr(updated_task.priority, 'value') else GraphQLPriority(updated_task.priority)
+        
+        return updated_task
 
     @staticmethod
     def delete_task(info, id: str) -> bool:
