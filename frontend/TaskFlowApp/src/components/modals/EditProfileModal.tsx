@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert, Modal } from 'react-native';
+import { View, StyleSheet, Alert, Modal, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Text,
@@ -142,12 +142,10 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
       animationType="fade"
       onRequestClose={handleCancel}
     >
-      <View style={styles.modalOverlay}>
-        <ScrollView 
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
-        >
-          <Card style={styles.card}>
+      <TouchableWithoutFeedback onPress={handleCancel}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <Card style={styles.card}>
           <Card.Content>
           <Text variant="headlineSmall" style={styles.title}>
             프로필 편집
@@ -212,9 +210,10 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
           </View>
 
           </Card.Content>
-          </Card>
-        </ScrollView>
-      </View>
+            </Card>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -225,13 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
-    minHeight: '100%',
   },
   card: {
     width: '100%',
