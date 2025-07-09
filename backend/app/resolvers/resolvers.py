@@ -37,27 +37,46 @@ class QueryResolver:
         현재 인증된 사용자 반환
         """
         context = info.context
-        return context["current_user"]
+        current_user = context["current_user"]
+        
+        if current_user:
+            # Role enum을 GraphQL 호환 형식으로 변환
+            from app.schemas.types import Role as GraphQLRole
+            current_user.role = GraphQLRole(current_user.role.value) if hasattr(current_user.role, 'value') else GraphQLRole(current_user.role)
+        
+        return current_user
 
     @staticmethod
     def projects(info) -> List[Project]:
         """
         사용자가 속한 프로젝트들 반환
         """
-        context = info.context
-        db = context["db"]
-        current_user = context["current_user"]
-        
-        # 인증 확인
-        if not current_user:
-            raise HTTPException(status_code=401, detail="Authentication required")
-        
-        # 프로젝트 서비스 생성
-        from app.services.project_service import ProjectService
-        project_service = ProjectService(db)
-        
-        # 사용자가 속한 프로젝트들 반환
-        return project_service.get_user_projects(current_user.id)
+        try:
+            context = info.context
+            db = context["db"]
+            current_user = context["current_user"]
+            
+            print(f"🔍 projects query - current_user: {current_user.id if current_user else None}")
+            
+            # 인증 확인
+            if not current_user:
+                raise HTTPException(status_code=401, detail="Authentication required")
+            
+            # 프로젝트 서비스 생성
+            from app.services.project_service import ProjectService
+            project_service = ProjectService(db)
+            
+            # 사용자가 속한 프로젝트들 반환
+            projects = project_service.get_user_projects(current_user.id)
+            print(f"✅ Found {len(projects)} projects for user {current_user.id}")
+            return projects
+            
+        except Exception as e:
+            print(f"❌ Error in projects query: {e}")
+            print(f"❌ Error type: {type(e)}")
+            import traceback
+            traceback.print_exc()
+            raise e
 
     @staticmethod
     def project(info, id: str) -> Optional[Project]:
@@ -65,7 +84,7 @@ class QueryResolver:
         특정 프로젝트 반환
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -113,7 +132,7 @@ class QueryResolver:
         특정 태스크 반환
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -133,7 +152,7 @@ class QueryResolver:
         사용자의 알림들 반환
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -233,7 +252,7 @@ class MutationResolver:
         프로젝트 생성
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -245,7 +264,7 @@ class MutationResolver:
         프로젝트 수정
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -261,7 +280,7 @@ class MutationResolver:
         프로젝트 삭제
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -277,7 +296,7 @@ class MutationResolver:
         태스크 생성
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -293,7 +312,7 @@ class MutationResolver:
         태스크 수정
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -313,7 +332,7 @@ class MutationResolver:
         태스크 삭제
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -333,7 +352,7 @@ class MutationResolver:
         댓글 추가
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
@@ -353,7 +372,7 @@ class MutationResolver:
         알림 읽음 처리
         """
         context = info.context
-        current_user = context["auth_service"].get_current_user()
+        current_user = context["current_user"]
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
