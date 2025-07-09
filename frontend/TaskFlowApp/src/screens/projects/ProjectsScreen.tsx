@@ -48,9 +48,16 @@ export default function ProjectsScreen({ navigation }: Props) {
   const { data, loading, error, refetch } = useQuery(GET_PROJECTS, {
     skip: !user, // 사용자가 없으면 쿼리 실행하지 않음
     onCompleted: (data) => {
-      setProjects(data.projects || []);
+      console.log('GET_PROJECTS 응답:', data);
+      // 유효한 프로젝트만 필터링
+      const validProjects = (data.projects || []).filter(
+        (project: any) => project && project.id
+      );
+      console.log('유효한 프로젝트:', validProjects);
+      setProjects(validProjects);
     },
     onError: (error) => {
+      console.error('프로젝트 쿼리 에러:', error);
       setError(error.message);
       Alert.alert('오류', '프로젝트를 불러오는데 실패했습니다.');
     },
@@ -84,35 +91,43 @@ export default function ProjectsScreen({ navigation }: Props) {
     setCreateModalVisible(true);
   };
 
-  const renderProject = ({ item }: { item: Project }) => (
-    <Card
-      style={styles.projectCard}
-      onPress={() => handleProjectPress(item)}
-    >
-      <Card.Content>
-        <View style={styles.projectHeader}>
-          <View style={styles.projectInfo}>
-            <Text variant="headlineMedium" style={styles.projectTitle}>{item.name}</Text>
-            {item.description && (
-              <Text variant="bodyMedium" style={styles.projectDescription}>
-                {item.description}
-              </Text>
-            )}
+  const renderProject = ({ item }: { item: Project }) => {
+    // 유효하지 않은 프로젝트 항목 방어
+    if (!item || !item.id) {
+      console.warn('Invalid project item:', item);
+      return null;
+    }
+    
+    return (
+      <Card
+        style={styles.projectCard}
+        onPress={() => handleProjectPress(item)}
+      >
+        <Card.Content>
+          <View style={styles.projectHeader}>
+            <View style={styles.projectInfo}>
+              <Text variant="headlineMedium" style={styles.projectTitle}>{item.name || '이름 없음'}</Text>
+              {item.description && (
+                <Text variant="bodyMedium" style={styles.projectDescription}>
+                  {item.description}
+                </Text>
+              )}
+            </View>
+            <IconButton
+              icon="chevron-right"
+              size={24}
+              onPress={() => handleProjectPress(item)}
+            />
           </View>
-          <IconButton
-            icon="chevron-right"
-            size={24}
-            onPress={() => handleProjectPress(item)}
-          />
-        </View>
-        <View style={styles.projectMeta}>
-          <Text style={styles.metaText}>
-            생성일: {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
+          <View style={styles.projectMeta}>
+            <Text style={styles.metaText}>
+              생성일: {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '알 수 없음'}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    );
+  };
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
@@ -162,7 +177,7 @@ export default function ProjectsScreen({ navigation }: Props) {
       <FlatList
         data={filteredProjects}
         renderItem={renderProject}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item?.id || `project-${index}`}
         contentContainerStyle={styles.listContainer}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
