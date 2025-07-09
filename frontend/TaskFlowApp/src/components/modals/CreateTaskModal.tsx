@@ -69,7 +69,7 @@ export default function CreateTaskModal({ visible, onDismiss, projectId }: Props
         variables: {
           input: {
             title: formData.title.trim(),
-            description: formData.description.trim() || undefined,
+            description: formData.description?.trim() || undefined,
             projectId: formData.projectId,
             priority: formData.priority,
             dueDate: formData.dueDate,

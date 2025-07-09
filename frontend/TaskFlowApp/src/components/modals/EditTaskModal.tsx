@@ -28,6 +28,7 @@ export default function EditTaskModal({ visible, onDismiss, task }: Props) {
   const { updateTask } = useTasksStore();
   
   const [formData, setFormData] = useState<UpdateTaskInput>({
+    id: task.id,
     title: task.title,
     description: task.description || '',
     status: task.status,
@@ -37,6 +38,7 @@ export default function EditTaskModal({ visible, onDismiss, task }: Props) {
   useEffect(() => {
     if (task) {
       setFormData({
+        id: task.id,
         title: task.title,
         description: task.description || '',
         status: task.status,
@@ -100,7 +102,7 @@ export default function EditTaskModal({ visible, onDismiss, task }: Props) {
     { value: 'URGENT', label: '긴급' },
   ];
 
-  const isValid = formData.title?.trim().length > 0;
+  const isValid = (formData.title?.trim().length || 0) > 0;
 
   return (
     <Portal>
