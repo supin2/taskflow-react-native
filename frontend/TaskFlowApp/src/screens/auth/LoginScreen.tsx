@@ -34,8 +34,8 @@ export default function LoginScreen({ navigation }: Props) {
   const { login } = useAuthStore();
   
   const [formData, setFormData] = useState<LoginInput>({
-    email: 'admin@taskflow.com', // 개발용 기본값
-    password: 'admin123',
+    email: '',
+    password: '',
   });
 
   // 자동 로그인 기능 제거됨
@@ -61,6 +61,7 @@ export default function LoginScreen({ navigation }: Props) {
       await loginMutation({
         variables: { input: formData },
       });
+      console.log('hERE');
     } catch (error) {
       console.error('Login error:', error);
     }

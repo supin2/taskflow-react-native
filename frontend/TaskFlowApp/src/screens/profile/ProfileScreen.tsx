@@ -31,7 +31,9 @@ export default function ProfileScreen() {
   };
 
   const handleEditProfile = () => {
+    console.log('계정 설정 버튼 클릭됨');
     setIsEditModalVisible(true);
+    console.log('모달 상태 변경:', true);
   };
 
   const handleCloseEditModal = () => {

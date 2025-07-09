@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Modal,
-  Portal,
   Text,
   TextInput,
   Button,
@@ -47,7 +46,9 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
 
   // 모달이 열릴 때마다 폼 데이터 초기화
   useEffect(() => {
+    console.log('EditProfileModal visible 상태:', visible);
     if (visible && user) {
+      console.log('폼 데이터 초기화:', user);
       setFormData({
         name: user.name,
         email: user.email,
@@ -136,12 +137,11 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
   );
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={handleCancel}
-        contentContainerStyle={styles.modalContainer}
-      >
+    <Modal
+      visible={visible}
+      onDismiss={handleCancel}
+      contentContainerStyle={styles.modalContainer}
+    >
         <SafeAreaView style={styles.container} edges={['top']}>
           <Card style={styles.card}>
             <Card.Content>
@@ -213,8 +213,7 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
             </Card.Content>
           </Card>
         </SafeAreaView>
-      </Modal>
-    </Portal>
+    </Modal>
   );
 }
 
