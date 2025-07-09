@@ -6,6 +6,7 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Card,
   FAB,
@@ -135,7 +136,7 @@ export default function ProjectsScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text variant="headlineMedium" style={styles.screenTitle}>프로젝트</Text>
         <Text style={styles.welcomeText}>안녕하세요, {user?.name}님!</Text>
@@ -171,14 +172,14 @@ export default function ProjectsScreen({ navigation }: Props) {
         visible={createModalVisible}
         onDismiss={() => setCreateModalVisible(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
   },
   header: {
     padding: 20,

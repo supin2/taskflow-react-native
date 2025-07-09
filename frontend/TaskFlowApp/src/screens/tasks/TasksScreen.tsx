@@ -6,6 +6,7 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Card,
   Text,
@@ -260,7 +261,7 @@ export default function TasksScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text variant="headlineMedium" style={styles.screenTitle}>태스크</Text>
         {currentProject && (
@@ -308,14 +309,14 @@ export default function TasksScreen({ navigation }: Props) {
         onDismiss={() => setCreateModalVisible(false)}
         projectId={currentProject?.id}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
   },
   header: {
     padding: 20,

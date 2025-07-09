@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Text,
   Button,
@@ -58,7 +59,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text variant="headlineMedium" style={styles.screenTitle}>프로필</Text>
       </View>
@@ -126,14 +127,14 @@ export default function ProfileScreen() {
           로그아웃
         </Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
   },
   header: {
     padding: 20,
