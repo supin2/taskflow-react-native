@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  Modal,
   Text,
   TextInput,
   Button,
@@ -139,12 +138,16 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
   return (
     <Modal
       visible={visible}
-      onDismiss={handleCancel}
-      contentContainerStyle={styles.modalContainer}
-      dismissable={true}
+      transparent={true}
+      animationType="fade"
+      onRequestClose={handleCancel}
     >
       <View style={styles.modalOverlay}>
-        <Card style={styles.card}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <Card style={styles.card}>
           <Card.Content>
           <Text variant="headlineSmall" style={styles.title}>
             프로필 편집
@@ -209,22 +212,26 @@ export default function EditProfileModal({ visible, onDismiss }: Props) {
           </View>
 
           </Card.Content>
-        </Card>
+          </Card>
+        </ScrollView>
       </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
   modalOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    minHeight: '100%',
   },
   card: {
     width: '100%',
@@ -239,15 +246,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   formContainer: {
-    gap: 2,
+    marginTop: 8,
   },
   input: {
-    marginBottom: 8,
+    marginBottom: 4,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10,
+    marginTop: 16,
+    gap: 12,
   },
   cancelButton: {
     flex: 1,
