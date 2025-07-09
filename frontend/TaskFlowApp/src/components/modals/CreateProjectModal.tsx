@@ -32,9 +32,7 @@ export default function CreateProjectModal({ visible, onDismiss }: Props) {
 
   const [createProject, { loading }] = useMutation(CREATE_PROJECT, {
     onCompleted: (data) => {
-      console.log('프로젝트 생성 완료:', data);
       const newProject = data.createProject;
-      console.log('새 프로젝트 추가:', newProject);
       addProject(newProject);
       handleClose();
     },

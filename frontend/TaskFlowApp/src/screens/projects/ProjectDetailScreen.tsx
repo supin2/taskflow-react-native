@@ -16,12 +16,12 @@ import {
   FAB,
   useTheme,
 } from 'react-native-paper';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 
 import { RootStackParamList } from '../../navigation/AppNavigator';
-import { GET_PROJECT } from '../../services/graphql/projects';
+import { DELETE_PROJECT, GET_PROJECT } from '../../services/graphql/projects';
 import { GET_TASKS } from '../../services/graphql/tasks';
 import { useProjectsStore } from '../../store/projects';
 import { useTasksStore } from '../../store/tasks';
@@ -38,7 +38,7 @@ interface Props {
 export default function ProjectDetailScreen({ navigation, route }: Props) {
   const theme = useTheme();
   const { projectId } = route.params;
-  const { setSelectedProject } = useProjectsStore();
+  const { setSelectedProject, removeProject } = useProjectsStore();
   const { tasks, setTasks } = useTasksStore();
   const [project, setProject] = useState<Project | null>(null);
 
@@ -66,6 +66,15 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
     },
   });
 
+  const [deleteProject, { loading: deleteLoading }] = useMutation(DELETE_PROJECT, {
+    onCompleted: (data) => {
+      removeProject(projectId);
+      navigation.goBack();
+    },
+    onError: (error) => {
+    }
+  });
+
   const handleRefresh = () => {
     refetchProject();
     refetchTasks();
@@ -77,6 +86,13 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
 
   const handleTaskPress = (task: Task) => {
     navigation.navigate('TaskDetail', { taskId: task.id });
+  };
+
+  const handleDeleteProject = () => {
+    Alert.alert('알림', '프로젝트를 삭제하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      { text: '삭제', style: 'destructive', onPress: () => deleteProject({ variables: { id: projectId } }) },
+    ]);
   };
 
   const getStatusColor = (status: string) => {
@@ -186,6 +202,13 @@ export default function ProjectDetailScreen({ navigation, route }: Props) {
               <Text style={styles.metaText}>
                 생성일: {new Date(project.createdAt).toLocaleDateString()}
               </Text>
+              <Button
+                mode="text"
+                onPress={handleDeleteProject}
+                compact
+              >
+                프로젝트 삭제
+              </Button>
             </View>
           </Card.Content>
         </Card>
