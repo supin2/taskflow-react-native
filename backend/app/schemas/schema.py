@@ -78,6 +78,10 @@ class Mutation:
     @strawberry.field
     def refreshToken(self, info) -> AuthPayload:
         return MutationResolver.refresh_token(info)
+    
+    @strawberry.field
+    def updateProfile(self, info, input: UpdateProfileInput) -> User:
+        return MutationResolver.update_profile(info, input)
 
 
 # Subscription Type

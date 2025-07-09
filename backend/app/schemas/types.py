@@ -176,6 +176,13 @@ class RegisterInput:
     name: str
 
 
+@strawberry.input
+class UpdateProfileInput:
+    name: Optional[str] = None
+    email: Optional[str] = None
+    avatar: Optional[str] = None
+
+
 @strawberry.type
 class AuthPayload:
     token: str

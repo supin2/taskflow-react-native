@@ -411,6 +411,80 @@ class MutationResolver:
         
         return AuthPayload(token=access_token, user=current_user)
 
+    @staticmethod
+    def update_profile(info, input):
+        """
+        프로필 업데이트 처리
+        """
+        context = info.context
+        current_user = context["current_user"]
+        db = context["db"]
+        
+        # 인증 확인
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        try:
+            # 현재 사용자의 데이터베이스 객체 가져오기
+            from app.models.models import User
+            user = db.query(User).filter(User.id == current_user.id).first()
+            
+            if not user:
+                raise HTTPException(status_code=404, detail="User not found")
+            
+            # 업데이트할 필드들 확인 및 적용
+            updated_fields = []
+            
+            if input.name is not None:
+                if len(input.name.strip()) < 2:
+                    raise HTTPException(status_code=400, detail="Name must be at least 2 characters")
+                user.name = input.name.strip()
+                updated_fields.append("name")
+            
+            if input.email is not None:
+                import re
+                email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+                if not re.match(email_pattern, input.email):
+                    raise HTTPException(status_code=400, detail="Invalid email format")
+                
+                # 이메일 중복 확인 (현재 사용자 제외)
+                existing_user = db.query(User).filter(
+                    User.email == input.email,
+                    User.id != current_user.id
+                ).first()
+                if existing_user:
+                    raise HTTPException(status_code=400, detail="Email already exists")
+                
+                user.email = input.email.strip()
+                updated_fields.append("email")
+            
+            if input.avatar is not None:
+                user.avatar = input.avatar
+                updated_fields.append("avatar")
+            
+            # 변경사항이 있는 경우에만 업데이트
+            if updated_fields:
+                from datetime import datetime
+                user.updated_at = datetime.utcnow()
+                db.commit()
+                db.refresh(user)
+                print(f"✅ Profile updated for user {user.id}: {', '.join(updated_fields)}")
+            else:
+                print("ℹ️ No changes to update")
+            
+            # Role enum을 GraphQL 호환 형식으로 변환
+            from app.schemas.types import Role as GraphQLRole
+            user.role = GraphQLRole(user.role.value) if hasattr(user.role, 'value') else GraphQLRole(user.role)
+            
+            return user
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"❌ Error updating profile: {e}")
+            db.rollback()
+            raise HTTPException(status_code=500, detail="Internal server error")
+
 
 class SubscriptionResolver:
     @staticmethod
